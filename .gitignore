@@ -1,0 +1,8 @@
+# comment - this is ignored file list
+*.suo
+*.sln
+*.db
+*.config
+*/bin/
+*/obj/
+*/Config/
