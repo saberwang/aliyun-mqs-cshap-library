@@ -8,6 +8,7 @@ aliyun-mqs-cshap-library
 
 
 var mqClient = new MQSClient("http://{queueownerId}.mqs-cn-hangzhou.aliyuncs.com", "{accessKeyId}", "{accessKeySecret}");
+
 var queue = mqClient.getQueue("{queueName}");
 
 //发送消息
