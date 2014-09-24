@@ -28,6 +28,7 @@ queue.popMessageAsync(message => {
 queue.deleteMessage("{receiptHandle}");
 
 //peek message
+
 MessageReceiveResponse message = queue.peekMessage();
 
 
