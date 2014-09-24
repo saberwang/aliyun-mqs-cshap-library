@@ -18,6 +18,12 @@ namespace AMQS
         private string version = "2014-07-08";
 
         private RestClient restClient;
+
+        static MQSClient()
+        {
+            System.Net.ServicePointManager.MaxServicePointIdleTime = 8000;
+        }
+
         public MQSClient(string url, string accessKeyId, string accessKeySecret)
         {
             this.url = url;
@@ -215,6 +221,7 @@ namespace AMQS
             public const string MQVERSION = "x-mqs-version";
             public const string HOST = "Host";
             public const string DATE = "Date";
+            public const string KEEPALIVE = "Keep-Alive";
         }
     }
 }
