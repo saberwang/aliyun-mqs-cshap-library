@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AMQS.Consumer
@@ -24,17 +25,25 @@ namespace AMQS.Consumer
 
             while (true)
             {
-                MQSQueue queue = mqClient.getQueue("testmq1");
-                MessageReceiveResponse message = queue.popMessage();
-
-                if (!string.IsNullOrWhiteSpace(message.Code)) //有错误
+                try
                 {
-                    Console.WriteLine(message.Message);
-                    continue;
-                }
+                    MQSQueue queue = mqClient.getQueue("testmq1");
+                    MessageReceiveResponse message = queue.popMessage();
 
-                Console.WriteLine(message.MessageBody);
-                queue.deleteMessage(message.ReceiptHandle);
+                    if (!string.IsNullOrWhiteSpace(message.Code)) //有错误
+                    {
+                        Console.WriteLine(message.Message);
+                        continue;
+                    }
+
+                    Console.WriteLine("Receive mesaage : {0}", message.MessageBody);
+                    queue.deleteMessage(message.ReceiptHandle);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Thread.Sleep(3000);
+                }
             }
         }
     }
