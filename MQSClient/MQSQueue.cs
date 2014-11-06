@@ -23,10 +23,10 @@ namespace AMQS
         }
 
         public bool setAttribute(int visibilityTimeout = 60, int maximumMessageSize = 65536,
-            int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0)
+            int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0, bool overwrite = true)
         {
             var response = client.execute<NoContentResponse>(MQSClient.Method.PUT,
-                string.Format("{0}?Metaoverride=true", name), new Dictionary<string, string>(),
+                string.Format("{0}{1}", name, overwrite ? "?Metaoverride=true" : ""), new Dictionary<string, string>(),
                 new QueueAttributeSetRequest
                 {
                     VisibilityTimeout = visibilityTimeout,
@@ -43,6 +43,15 @@ namespace AMQS
         {
             return client.execute<QueueAttributeGetResponse>(MQSClient.Method.GET, name,
                 new Dictionary<string, string>());
+        }
+
+        public bool CreateQueue(int visibilityTimeout = 60, int maximumMessageSize = 65536,
+            int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0)
+        {
+            var response = setAttribute(visibilityTimeout, maximumMessageSize, messageRetentionPeriod, delaySeconds,
+                pollingWaitSeconds, false);
+
+            return response;
         }
 
         public MessageSendResponse sendMessage(string message, int delaySeconds = 0, int priority = 8)

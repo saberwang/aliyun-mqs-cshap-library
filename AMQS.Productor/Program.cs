@@ -9,6 +9,10 @@ namespace AMQS.Productor
     {
         private static void Main(string[] args)
         {
+            MQSQueue mqsQueue = new MQSClient(string.Format("http://{0}.mqs-cn-hangzhou.aliyuncs.com", AliConfig.queueownerId),
+                AliConfig.accessKeyId, AliConfig.accessKeySecret).getQueue("testmq1");
+            mqsQueue.CreateQueue(pollingWaitSeconds: 60);
+
             Start();
             
             var input = string.Empty;

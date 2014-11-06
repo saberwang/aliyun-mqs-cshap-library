@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Security.Cryptography;
 using RestSharp;
@@ -69,6 +70,10 @@ namespace AMQS
                 return response.Data;
             }
             else if ( response.StatusCode == System.Net.HttpStatusCode.OK ||response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                return null;
+            }
+            else if(response.StatusCode == HttpStatusCode.Created)
             {
                 return null;
             }

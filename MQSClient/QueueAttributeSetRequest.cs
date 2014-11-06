@@ -10,9 +10,13 @@ namespace AMQS
     public class QueueAttributeSetRequest : MQSRequest
     {
         public int VisibilityTimeout { set; get; }
+
         public int MaximumMessageSize { set; get; }
+
         public int MessageRetentionPeriod { set; get; }
+
         public int DelaySeconds { set; get; }
+
         public int PollingWaitSeconds { set; get; }
     }
 }
