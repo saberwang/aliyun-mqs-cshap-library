@@ -33,7 +33,7 @@ namespace AMQS
                     MaximumMessageSize = maximumMessageSize,
                     DelaySeconds = delaySeconds,
                     MessageRetentionPeriod = messageRetentionPeriod,
-                    PollingWaitSeconds = 0
+                    PollingWaitSeconds = pollingWaitSeconds
                 });
 
             return response == null;
