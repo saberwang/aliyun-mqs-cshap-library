@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace AliMNS
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public class QueueAttributeGetResponse : MNSResponse
     {
         public int ActiveMessages { set; get; }

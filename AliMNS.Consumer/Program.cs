@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,11 @@ namespace AliMNS.Consumer
         private static void Main(string[] args)
         {
             Console.WriteLine("Press any key to exit.");
+
+#if NETCOREAPP1_1
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+          Console.OutputEncoding =Encoding.GetEncoding(936);
+#endif 
             AliConfig.AccessKey = args[0];
             AliConfig.AccessKeySecret = args[1];
             AliConfig.Endpoint = args[2];
@@ -23,7 +29,7 @@ namespace AliMNS.Consumer
         {
 
             var mqClient =
-                new MQNSClient(AliConfig.Endpoint ,
+                new MQNSClient(AliConfig.Endpoint,
                     AliConfig.AccessKey, AliConfig.AccessKeySecret);
 
             while (true)
@@ -39,7 +45,7 @@ namespace AliMNS.Consumer
                         continue;
                     }
 
-                    Console.WriteLine("Receive mesaage : {0}", message.MessageBody);
+                    Console.WriteLine("收到消息Receive mesaage : {0}", message.MessageBody);
                     queue.deleteMessage(message.ReceiptHandle);
                 }
                 catch (Exception ex)

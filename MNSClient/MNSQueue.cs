@@ -22,12 +22,12 @@ namespace AliMNS
             this.client = client;
         }
 
-        public bool setAttribute(int visibilityTimeout = 60, int maximumMessageSize = 65536,
+        public bool setAttribute(int visibilityTimeout = 30, int maximumMessageSize = 65536,
             int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0, bool overwrite = false)
         {
             var response = client.execute<NoContentResponse>(MQNSClient.Method.PUT,
                 string.Format("/queues/{0}{1}", name, overwrite ? "?metaOverride=true" : ""), new Dictionary<string, string>(),
-                new QueueAttributeSetRequest
+                new Queue
                 {
                     VisibilityTimeout = visibilityTimeout,
                     MaximumMessageSize = maximumMessageSize,
@@ -58,7 +58,7 @@ namespace AliMNS
         {
             return client.execute<MessageSendResponse>(MQNSClient.Method.POST, string.Format("/queues/{0}/{1}", name, "messages"),
                 new Dictionary<string, string>(),
-                new MessageSendRequest {MessageBody = message, DelaySeconds = delaySeconds, Priority = priority});
+                new Message {MessageBody = message, DelaySeconds = delaySeconds, Priority = priority});
         }
 
         public MessageReceiveResponse popMessage()

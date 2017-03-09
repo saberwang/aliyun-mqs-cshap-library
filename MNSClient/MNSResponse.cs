@@ -5,9 +5,11 @@ using System.Text;
 
 namespace AliMNS
 {
-    public abstract class MNSResponse
+   
+    [AttributeUsage( AttributeTargets.Class)]
+    public abstract class MNSResponse:Attribute
     {
-        public string Code { set; get; } //错误码 
+          public string Code { set; get; } //错误码 
 
         public string Message { set; get; } //错误消息
 

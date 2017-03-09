@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <RootNamespace>AliMNS</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\MNSClient\AliConfig.cs" Link="AliConfig.cs" />
+    <Compile Include="..\MNSClient\MessageReceiveResponse.cs" Link="MessageReceiveResponse.cs" />
+    <Compile Include="..\MNSClient\MessageSendRequest.cs" Link="MessageSendRequest.cs" />
+    <Compile Include="..\MNSClient\MessageSendResponse.cs" Link="MessageSendResponse.cs" />
+    <Compile Include="..\MNSClient\MessageVisibilityChangeResponse.cs" Link="MessageVisibilityChangeResponse.cs" />
+    <Compile Include="..\MNSClient\MNSClient.cs" Link="MNSClient.cs" />
+    <Compile Include="..\MNSClient\MNSQueue.cs" Link="MNSQueue.cs" />
+    <Compile Include="..\MNSClient\MNSRequest.cs" Link="MNSRequest.cs" />
+    <Compile Include="..\MNSClient\MNSRequestException.cs" Link="MNSRequestException.cs" />
+    <Compile Include="..\MNSClient\MNSResponse.cs" Link="MNSResponse.cs" />
+    <Compile Include="..\MNSClient\MNSResponseCode.cs" Link="MNSResponseCode.cs" />
+    <Compile Include="..\MNSClient\NoContentResponse.cs" Link="NoContentResponse.cs" />
+    <Compile Include="..\MNSClient\QueueAttributeGetResponse.cs" Link="QueueAttributeGetResponse.cs" />
+    <Compile Include="..\MNSClient\QueueAttributeSetRequest.cs" Link="Queue.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RestSharp.NetCore" Version="105.2.3" />
+    <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

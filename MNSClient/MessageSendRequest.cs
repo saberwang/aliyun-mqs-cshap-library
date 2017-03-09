@@ -7,8 +7,10 @@ using System.Runtime.Serialization;
 using RestSharp.Serializers;
 namespace AliMNS
 {
+    [AttributeUsage(AttributeTargets.Class)]
     [SerializeAs(Name="Message")]
-    public class MessageSendRequest : MNSRequest
+ 
+    public class Message : Attribute, MNSRequest
     {
         public string MessageBody { set; get; }
         public int DelaySeconds { set; get; }

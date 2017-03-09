@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Security.Cryptography;
 using RestSharp;
+using System.Threading.Tasks;
 
 namespace AliMNS
 {
@@ -30,7 +31,7 @@ namespace AliMNS
             this.accessKeyId = accessKeyId;
             this.accessKeySecret = accessKeySecret;
 
-            this.host = url.StartsWith("http://") ? url.Substring(7) :url;
+            this.host = new Uri(url).Host;
 
             this.restClient = new RestClient(this.url);
         }
@@ -59,28 +60,36 @@ namespace AliMNS
         {
             //var restClient = new RestClient(this.url);
             var request = new RestRequest(resource, this.map(method));
-            request.RequestFormat = DataFormat.Xml;
+            request.RequestFormat =  DataFormat.Xml;
 
             this.requestInit(method,request, headers, input);
+          
+            var task = new TaskCompletionSource<TR>();
+           
+            var responseasync = restClient.ExecuteAsync<TR>(request, response => {
 
-            var response = restClient.Execute<TR>(request);
 
-            if (response.Data != null)
-            {
-                return response.Data;
-            }
-            else if ( response.StatusCode == System.Net.HttpStatusCode.OK ||response.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                return null;
-            }
-            else if(response.StatusCode == HttpStatusCode.Created)
-            {
-                return null;
-            }
-            else
-            {
-                throw new MNSRequestException(string.Format("{0}:{1}", response.StatusCode, response.StatusDescription));
-            }
+                if (response.Data != null)
+                {
+                    task.SetResult(response.Data);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    task.SetResult(null);
+                }
+                else if (response.StatusCode == HttpStatusCode.Created)
+                {
+                    task.SetResult(null);
+                }
+                else
+                {
+                    throw new MNSRequestException(string.Format("{0}:{1}", response.StatusCode, response.ErrorMessage));
+                }
+
+            });
+            Task.WaitAll(task.Task);
+            return task.Task.Result;
+
         }
 
         /// <summary>
@@ -120,6 +129,9 @@ namespace AliMNS
             if (!headers.ContainsKey(HeaderConst.DATE))
             {
                 headers[HeaderConst.DATE] = DateTime.Now.ToUniversalTime().ToString("r");
+                headers[HeaderConst.X_MNS_DATE] = DateTime.Now.ToUniversalTime().ToString("r");
+
+
             }
             if (!headers.ContainsKey(HeaderConst.MQVERSION))
             {
@@ -227,6 +239,7 @@ namespace AliMNS
             public const string HOST = "Host";
             public const string DATE = "Date";
             public const string KEEPALIVE = "Keep-Alive";
+            public const string X_MNS_DATE = "x-mns-date";
         }
     }
 }

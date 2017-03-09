@@ -5,6 +5,7 @@ using System.Text;
 
 namespace AliMNS
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public class MessageSendResponse : MNSResponse
     {
         public string MessageId { set; get; }

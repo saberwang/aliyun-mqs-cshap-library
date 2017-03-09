@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using RestSharp.Serializers;
+using System.Xml.Serialization;
+
 namespace AliMNS
 {
-    [SerializeAs(Name="Queue")]
-    public class QueueAttributeSetRequest : MNSRequest
+    
+   
+    [SerializeAs( Name = "Queue")]
+    [XmlRoot("Queue")]
+    
+    public class Queue :  Attribute ,MNSRequest
     {
         public int VisibilityTimeout { set; get; }
 
