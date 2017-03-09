@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AMQS.Consumer;
+ 
 
-namespace AMQS.Productor
+namespace AliMNS.Productor
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            MQSQueue mqsQueue = new MQSClient(string.Format("http://{0}.mqs-cn-hangzhou.aliyuncs.com", AliConfig.queueownerId),
-                AliConfig.accessKeyId, AliConfig.accessKeySecret).getQueue("testmq1");
+            AliConfig.AccessKey = args[0];
+            AliConfig.AccessKeySecret = args[1];
+            AliConfig.Endpoint = args[2];
+            MNSQueue mqsQueue = new MQNSClient( AliConfig.Endpoint,
+                AliConfig.AccessKey, AliConfig.AccessKeySecret).getQueue("toll-open");
             mqsQueue.CreateQueue(pollingWaitSeconds: 60);
 
             Start();
@@ -41,15 +44,13 @@ namespace AMQS.Productor
                 try
                 {
                     var mqClient =
-                    new MQSClient(string.Format("http://{0}.mqs-cn-hangzhou.aliyuncs.com", AliConfig.queueownerId),
-                        AliConfig.accessKeyId, AliConfig.accessKeySecret);
-
-                    MQSQueue queue = mqClient.getQueue("testmq1");
+                    new MQNSClient( AliConfig.Endpoint,AliConfig.AccessKey, AliConfig.AccessKeySecret);
+                    MNSQueue queue = mqClient.getQueue("toll-open");
                     string message = string.Format("Hello World！ <from {0}, No.{1}>", Thread.CurrentThread.ManagedThreadId,
                         i);
-                    queue.sendMessage(message);
+                   var result= queue.sendMessage(message);
 
-                    Console.WriteLine("Send message : {0}", message);
+                    Console.WriteLine("Send message : {0},return code {1}", message,result.Code);
                 }
                 catch (Exception ex)
                 {

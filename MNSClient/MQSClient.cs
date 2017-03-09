@@ -15,7 +15,7 @@ namespace AMQS
         private string accessKeySecret;
 
         private string host;
-        private string version = "2014-07-08";
+        private string version = "2015-06-06";
 
         private RestClient restClient;
 
@@ -132,8 +132,8 @@ namespace AMQS
                 headers[HeaderConst.CONTENTTYPE] = "text/xml";
             }
 
-            headers[HeaderConst.AUTHORIZATION] = this.authorization(method, headers, string.Format("/{0}", request.Resource));
-
+            //headers[HeaderConst.CONTENTMD5]  =m
+            headers[HeaderConst.AUTHORIZATION] = authorization(method, headers, request.Resource);
             foreach (var kv in headers)
             {
                 request.AddHeader(kv.Key, kv.Value);
@@ -143,6 +143,7 @@ namespace AMQS
             {
                 request.AddBody(input);
             }
+            
         }
 
         public MQSQueue getQueue(string name)
@@ -179,7 +180,7 @@ namespace AMQS
         /// <returns></returns>
         private string authorization(Method method, Dictionary<string, string> headers, string resource)
         {
-            return string.Format("MQS {0}:{1}", this.accessKeyId, this.signature(method, headers, resource));
+            return string.Format("MNS {0}:{1}", this.accessKeyId, this.signature(method, headers, resource));
         }
 
         /// <summary>
@@ -197,7 +198,7 @@ namespace AMQS
             toSign.Add(headers.ContainsKey(HeaderConst.CONTENTTYPE) ? headers[HeaderConst.CONTENTTYPE] : string.Empty);
             toSign.Add(headers.ContainsKey(HeaderConst.DATE) ? headers[HeaderConst.DATE] : DateTime.Now.ToUniversalTime().ToString("r"));
 
-            foreach (KeyValuePair<string, string> header in headers.Where(kv => kv.Key.StartsWith("x-mqs")).OrderBy(kv => kv.Key))
+            foreach (KeyValuePair<string, string> header in headers.Where(kv => kv.Key.StartsWith("x-mns")).OrderBy(kv => kv.Key))
             {
                 toSign.Add(string.Format("{0}:{1}", header.Key, header.Value));
             }
@@ -222,7 +223,7 @@ namespace AMQS
             public const string AUTHORIZATION = "Authorization";
             public const string CONTENTTYPE = "Content-Type";
             public const string CONTENTMD5 = "Content-MD5";
-            public const string MQVERSION = "x-mqs-version";
+            public const string MQVERSION = "x-mns-version";
             public const string HOST = "Host";
             public const string DATE = "Date";
             public const string KEEPALIVE = "Keep-Alive";

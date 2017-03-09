@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AMQS
+namespace AliMNS
 {
-    public class QueueAttributeGetResponse : MQSResponse
+    public class QueueAttributeGetResponse : MNSResponse
     {
         public int ActiveMessages { set; get; }
         public string CreateTime { set; get; }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 
 using RestSharp.Serializers;
-namespace AMQS
+namespace AliMNS
 {
     [SerializeAs(Name="Queue")]
-    public class QueueAttributeSetRequest : MQSRequest
+    public class QueueAttributeSetRequest : MNSRequest
     {
         public int VisibilityTimeout { set; get; }
 

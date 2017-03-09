@@ -2,14 +2,16 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AMQS.Consumer
+namespace AliMNS.Consumer
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
             Console.WriteLine("Press any key to exit.");
-
+            AliConfig.AccessKey = args[0];
+            AliConfig.AccessKeySecret = args[1];
+            AliConfig.Endpoint = args[2];
             Task.Factory.StartNew(ReceiveMessage);
             Task.Factory.StartNew(ReceiveMessage);
             Task.Factory.StartNew(ReceiveMessage);
@@ -19,15 +21,16 @@ namespace AMQS.Consumer
 
         private static void ReceiveMessage()
         {
+
             var mqClient =
-                new MQSClient(string.Format("http://{0}.mqs-cn-hangzhou.aliyuncs.com", AliConfig.queueownerId),
-                    AliConfig.accessKeyId, AliConfig.accessKeySecret);
+                new MQNSClient(AliConfig.Endpoint ,
+                    AliConfig.AccessKey, AliConfig.AccessKeySecret);
 
             while (true)
             {
                 try
                 {
-                    MQSQueue queue = mqClient.getQueue("testmq1");
+                    MNSQueue queue = mqClient.getQueue("toll-open");
                     MessageReceiveResponse message = queue.popMessage();
 
                     if (!string.IsNullOrWhiteSpace(message.Code)) //有错误

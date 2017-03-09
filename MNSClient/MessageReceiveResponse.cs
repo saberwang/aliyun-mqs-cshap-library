@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 
-namespace AMQS
+namespace AliMNS
 {
-    public class MessageReceiveResponse : MQSResponse
+    public class MessageReceiveResponse : MNSResponse
     {
         public string MessageId { set; get; }
 
