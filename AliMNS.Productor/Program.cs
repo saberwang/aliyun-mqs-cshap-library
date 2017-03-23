@@ -12,8 +12,8 @@ namespace AliMNS.Productor
             AliConfig.AccessKey = args[0];
             AliConfig.AccessKeySecret = args[1];
             AliConfig.Endpoint = args[2];
-            MNSQueue mqsQueue = new MQNSClient( AliConfig.Endpoint,
-                AliConfig.AccessKey, AliConfig.AccessKeySecret).getQueue("toll-open");
+            MNSQueue mqsQueue = new MNSClient( AliConfig.Endpoint,
+                AliConfig.AccessKey, AliConfig.AccessKeySecret).GetQueue("toll-open");
             mqsQueue.CreateQueue(pollingWaitSeconds: 10);
 
             Start();
@@ -44,11 +44,11 @@ namespace AliMNS.Productor
                 try
                 {
                     var mqClient =
-                    new MQNSClient( AliConfig.Endpoint,AliConfig.AccessKey, AliConfig.AccessKeySecret);
-                    MNSQueue queue = mqClient.getQueue("toll-open");
+                    new MNSClient( AliConfig.Endpoint,AliConfig.AccessKey, AliConfig.AccessKeySecret);
+                    MNSQueue queue = mqClient.GetQueue("toll-open");
                     string message = string.Format("Hello World! <from {0}, No.{1}>", Thread.CurrentThread.ManagedThreadId,
                         i);
-                   var result= queue.sendMessage(message);
+                   var result= queue.SendMessage(message);
 
                     Console.WriteLine("Send message : {0},return code {1}", message,result.Code);
                 }

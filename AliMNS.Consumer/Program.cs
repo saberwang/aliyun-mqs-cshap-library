@@ -29,15 +29,15 @@ namespace AliMNS.Consumer
         {
 
             var mqClient =
-                new MQNSClient(AliConfig.Endpoint,
+                new MNSClient(AliConfig.Endpoint,
                     AliConfig.AccessKey, AliConfig.AccessKeySecret);
 
             while (true)
             {
                 try
                 {
-                    MNSQueue queue = mqClient.getQueue("toll-open");
-                    MessageReceiveResponse message = queue.popMessage();
+                    MNSQueue queue = mqClient.GetQueue("toll-open");
+                    MessageReceiveResponse message = queue.PopMessage();
 
                     if (!string.IsNullOrWhiteSpace(message.Code)) //有错误
                     {
@@ -46,7 +46,7 @@ namespace AliMNS.Consumer
                     }
 
                     Console.WriteLine("收到消息Receive mesaage : {0}", message.MessageBody);
-                    queue.deleteMessage(message.ReceiptHandle);
+                    queue.DeleteMessage(message.ReceiptHandle);
                 }
                 catch (Exception ex)
                 {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AliMNS
 {
-    public class MQNSClient
+    public class MNSClient
     {
         private string url;
         private string accessKeyId;
@@ -20,12 +20,12 @@ namespace AliMNS
 
         private RestClient restClient;
 
-        static MQNSClient()
+        static MNSClient()
         {
             System.Net.ServicePointManager.MaxServicePointIdleTime = 8000;
         }
 
-        public MQNSClient(string url, string accessKeyId, string accessKeySecret)
+        public MNSClient(string url, string accessKeyId, string accessKeySecret)
         {
             this.url = url;
             this.accessKeyId = accessKeyId;
@@ -56,13 +56,14 @@ namespace AliMNS
         /// <param name="headers"></param>
         /// <param name="input"></param>
         /// <returns></returns>
-        internal TR execute<TR>(Method method, string resource, Dictionary<string, string> headers, MNSRequest input = null) where TR : MNSResponse, new()
+        internal TR Execute<TR>(Method method, string resource, Dictionary<string, string> headers, MNSRequest input = null) where TR : MNSResponse, new()
         {
             //var restClient = new RestClient(this.url);
-            var request = new RestRequest(resource, this.map(method));
-            request.RequestFormat =  DataFormat.Xml;
-
-            this.requestInit(method,request, headers, input);
+            var request = new RestRequest(resource, this.Map(method))
+            {
+                RequestFormat = DataFormat.Xml
+            };
+            this.RequestInit(method,request, headers, input);
           
             var task = new TaskCompletionSource<TR>();
            
@@ -75,7 +76,7 @@ namespace AliMNS
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.OK || response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    task.SetResult(null);
+                    task.SetResult( null);
                 }
                 else if (response.StatusCode == HttpStatusCode.Created)
                 {
@@ -83,7 +84,8 @@ namespace AliMNS
                 }
                 else
                 {
-                    throw new MNSRequestException(string.Format("{0}:{1}", response.StatusCode, response.ErrorMessage));
+               ;
+                    task.SetException(new MNSRequestException(string.Format("{0}:{1}", response.StatusCode, response.ErrorMessage)));
                 }
 
             });
@@ -101,13 +103,14 @@ namespace AliMNS
         /// <param name="headers"></param>
         /// <param name="callBack"></param>
         /// <param name="input"></param>
-        internal void executeAsync<TR>(Method method, string resource, Dictionary<string, string> headers, Action<TR> callBack, MNSRequest input = null) where TR : MNSResponse, new()
+        internal void ExecuteAsync<TR>(Method method, string resource, Dictionary<string, string> headers, Action<TR> callBack, MNSRequest input = null) where TR : MNSResponse, new()
         {
             //var restClient = new RestClient(this.url);
-            var request = new RestRequest(resource, this.map(method));
-            request.RequestFormat = DataFormat.Xml;
-
-            this.requestInit(method,request, headers, input);
+            var request = new RestRequest(resource, this.Map(method))
+            {
+                RequestFormat = DataFormat.Xml
+            };
+            this.RequestInit(method,request, headers, input);
 
             restClient.ExecuteAsync<TR>(request, IRR => {
                 callBack(IRR.Data);
@@ -120,7 +123,7 @@ namespace AliMNS
         /// <param name="request"></param>
         /// <param name="headers"></param>
         /// <param name="input"></param>
-        private void requestInit(Method method,RestRequest request, Dictionary<string, string> headers, MNSRequest input)
+        private void RequestInit(Method method,RestRequest request, Dictionary<string, string> headers, MNSRequest input)
         {
             if (!headers.ContainsKey(HeaderConst.HOST))
             {
@@ -145,7 +148,7 @@ namespace AliMNS
             }
 
             //headers[HeaderConst.CONTENTMD5]  =m
-            headers[HeaderConst.AUTHORIZATION] = authorization(method, headers, request.Resource);
+            headers[HeaderConst.AUTHORIZATION] = Authorization(method, headers, request.Resource);
             foreach (var kv in headers)
             {
                 request.AddHeader(kv.Key, kv.Value);
@@ -158,15 +161,15 @@ namespace AliMNS
             
         }
 
-        public MNSQueue getQueue(string name)
+        public MNSQueue GetQueue(string name)
         {
             var queue = new MNSQueue();
-            queue.setClient(this);
-            queue.setName(name);
+            queue.SetClient(this);
+            queue.SetName(name);
             return queue;
         }
 
-        private RestSharp.Method map(Method method)
+        private RestSharp.Method Map(Method method)
         {
             switch (method)
             {
@@ -190,9 +193,9 @@ namespace AliMNS
         /// <param name="headers"></param>
         /// <param name="resource"></param>
         /// <returns></returns>
-        private string authorization(Method method, Dictionary<string, string> headers, string resource)
+        private string Authorization(Method method, Dictionary<string, string> headers, string resource)
         {
-            return string.Format("MNS {0}:{1}", this.accessKeyId, this.signature(method, headers, resource));
+            return string.Format("MNS {0}:{1}", this.accessKeyId, this.Signature(method, headers, resource));
         }
 
         /// <summary>
@@ -202,14 +205,15 @@ namespace AliMNS
         /// <param name="headers"></param>
         /// <param name="resource"></param>
         /// <returns></returns>
-        private string signature(Method method, Dictionary<string, string> headers, string resource)
+        private string Signature(Method method, Dictionary<string, string> headers, string resource)
         {
-            List<string> toSign = new List<string>();
-            toSign.Add(method.ToString());
-            toSign.Add(headers.ContainsKey(HeaderConst.CONTENTMD5) ? headers[HeaderConst.CONTENTMD5] : string.Empty);
-            toSign.Add(headers.ContainsKey(HeaderConst.CONTENTTYPE) ? headers[HeaderConst.CONTENTTYPE] : string.Empty);
-            toSign.Add(headers.ContainsKey(HeaderConst.DATE) ? headers[HeaderConst.DATE] : DateTime.Now.ToUniversalTime().ToString("r"));
-
+            List<string> toSign = new List<string>
+            {
+                method.ToString(),
+                headers.ContainsKey(HeaderConst.CONTENTMD5) ? headers[HeaderConst.CONTENTMD5] : string.Empty,
+                headers.ContainsKey(HeaderConst.CONTENTTYPE) ? headers[HeaderConst.CONTENTTYPE] : string.Empty,
+                headers.ContainsKey(HeaderConst.DATE) ? headers[HeaderConst.DATE] : DateTime.Now.ToUniversalTime().ToString("r")
+            };
             foreach (KeyValuePair<string, string> header in headers.Where(kv => kv.Key.StartsWith("x-mns")).OrderBy(kv => kv.Key))
             {
                 toSign.Add(string.Format("{0}:{1}", header.Key, header.Value));

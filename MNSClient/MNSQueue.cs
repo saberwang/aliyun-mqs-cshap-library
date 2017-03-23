@@ -5,27 +5,27 @@ namespace AliMNS
 {
     public class MNSQueue
     {
-        private MQNSClient client;
+        private MNSClient client;
         private string name;
 
         internal MNSQueue()
         {
         }
 
-        internal void setName(string name)
+        internal void SetName(string name)
         {
             this.name = name;
         }
 
-        internal void setClient(MQNSClient client)
+        internal void SetClient(MNSClient client)
         {
             this.client = client;
         }
 
-        public bool setAttribute(int visibilityTimeout = 30, int maximumMessageSize = 65536,
+        public bool SetAttribute(int visibilityTimeout = 30, int maximumMessageSize = 65536,
             int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0, bool overwrite = false)
         {
-            var response = client.execute<NoContentResponse>(MQNSClient.Method.PUT,
+            var response = client.Execute<NoContentResponse>(MNSClient.Method.PUT,
                 string.Format("/queues/{0}{1}", name, overwrite ? "?metaOverride=true" : ""), new Dictionary<string, string>(),
                 new Queue
                 {
@@ -39,56 +39,61 @@ namespace AliMNS
             return response == null;
         }
 
-        public QueueAttributeGetResponse getAttribute()
+        public QueueAttributeGetResponse GetAttribute()
         {
-            return client.execute<QueueAttributeGetResponse>(MQNSClient.Method.GET, name,
+            return client.Execute<QueueAttributeGetResponse>(MNSClient.Method.GET, name,
                 new Dictionary<string, string>());
         }
 
         public bool CreateQueue(int visibilityTimeout = 60, int maximumMessageSize = 65536,
             int messageRetentionPeriod = 3600, int delaySeconds = 0, int pollingWaitSeconds = 0)
         {
-            var response = setAttribute(visibilityTimeout, maximumMessageSize, messageRetentionPeriod, delaySeconds,
+            var response = SetAttribute(visibilityTimeout, maximumMessageSize, messageRetentionPeriod, delaySeconds,
                 pollingWaitSeconds, true);
 
             return response;
         }
 
-        public MessageSendResponse sendMessage(string message, int delaySeconds = 0, int priority = 8)
+        public MessageSendResponse SendMessage(string message, int delaySeconds = 0, int priority = 8)
         {
-            return client.execute<MessageSendResponse>(MQNSClient.Method.POST, string.Format("/queues/{0}/{1}", name, "messages"),
+            return client.Execute<MessageSendResponse>(MNSClient.Method.POST, string.Format("/queues/{0}/{1}", name, "messages"),
                 new Dictionary<string, string>(),
                 new Message {MessageBody = message, DelaySeconds = delaySeconds, Priority = priority});
         }
 
-        public MessageReceiveResponse popMessage()
+        public MessageReceiveResponse PopMessage()
         {
-            return client.execute<MessageReceiveResponse>(MQNSClient.Method.GET,
+            return client.Execute<MessageReceiveResponse>(MNSClient.Method.GET,
                 string.Format("/queues/{0}/{1}", name, "messages"), new Dictionary<string, string>());
         }
 
-        public void popMessageAsync(Action<MessageReceiveResponse> callBack)
+        public void PopMessageAsync(Action<MessageReceiveResponse> callBack)
         {
-            client.executeAsync(MQNSClient.Method.GET, string.Format("/queues/{0}/{1}", name, "messages"),
+            client.ExecuteAsync(MNSClient.Method.GET, string.Format("/queues/{0}/{1}", name, "messages"),
                 new Dictionary<string, string>(), callBack);
         }
 
-        public MessageReceiveResponse peekMessage()
+        public MessageReceiveResponse PeekMessage()
         {
-            return client.execute<MessageReceiveResponse>(MQNSClient.Method.GET,
+            return client.Execute<MessageReceiveResponse>(MNSClient.Method.GET,
                 string.Format("/queues/{0}/{1}?peekonly=true", name, "messages"), new Dictionary<string, string>());
         }
-
-        public MessageVisibilityChangeResponse changeVisibility(string receiptHandle, int visibilityTimeOut)
+        public MessageReceiveResponse ReceiveMessage(int waitseconds=10)
         {
-            return client.execute<MessageVisibilityChangeResponse>(MQNSClient.Method.PUT,
+            return client.Execute<MessageReceiveResponse>(MNSClient.Method.GET,
+                string.Format("/queues/{0}/{1}?waitseconds={2}", name, "messages", waitseconds), new Dictionary<string, string>());
+        }
+
+        public MessageVisibilityChangeResponse ChangeVisibility(string receiptHandle, int visibilityTimeOut)
+        {
+            return client.Execute<MessageVisibilityChangeResponse>(MNSClient.Method.PUT,
                 string.Format("/queues/{0}/{1}?ReceiptHandle={2}&VisibilityTimeout={3}", name, "messages", receiptHandle,
                     visibilityTimeOut), new Dictionary<string, string>());
         }
 
-        public NoContentResponse deleteMessage(string receiptHandle)
+        public NoContentResponse DeleteMessage(string receiptHandle)
         {
-            return client.execute<NoContentResponse>(MQNSClient.Method.DELETE,
+            return client.Execute<NoContentResponse>(MNSClient.Method.DELETE,
                 string.Format("/queues/{0}/{1}?ReceiptHandle={2}", name, "messages", receiptHandle),
                 new Dictionary<string, string>());
             //return response == null; 
