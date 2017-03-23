@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AMQS
+namespace AliMNS
 {
-    public class NoContentResponse : MQSResponse
+    public interface MNSRequest
     {
     }
 }

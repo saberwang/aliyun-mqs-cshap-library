@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AMQS
+namespace AliMNS
 {
-    public class MQSRequestException : Exception
+    public class MNSRequestException : Exception
     {
-        public MQSRequestException(string message) :base(message)
+        public MNSRequestException(string message) :base(message)
         {
             
         }

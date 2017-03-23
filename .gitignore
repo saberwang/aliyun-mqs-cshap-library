@@ -6,3 +6,10 @@
 */bin/
 */obj/
 */Config/
+AMQS.Consumer/AliConfig.cs
+/packages/RestSharp.105.2.3
+/packages/RestSharp.105.2.3
+/AliMNS.Consumer/AliMNS.Consumer.csproj.user
+*.user
+/MNSClient/packages/RestSharp.105.2.3
+/MNSClient/packages/RestSharp.105.2.3

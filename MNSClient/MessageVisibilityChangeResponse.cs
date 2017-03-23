@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AMQS
+namespace AliMNS
 {
-    public class MessageVisibilityChangeResponse : MQSResponse
+    [AttributeUsage(AttributeTargets.Class)]
+    public class MessageVisibilityChangeResponse : MNSResponse
     {
         public string ReceiptHandle { set; get; }
         public long NextVisibleTime { set; get; }

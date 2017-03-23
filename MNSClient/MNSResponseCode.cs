@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AMQS
+namespace AliMNS
 {
-    public class MQSResponseCode
+    public class MNSResponseCode
     {
         public const string  AccessDenied = "AccessDenied";
         public const string InvalidAccessKeyId = "InvalidAccessKeyId";
